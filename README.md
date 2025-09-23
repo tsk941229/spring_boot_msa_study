@@ -220,3 +220,37 @@ WAS에 요청을 분산해줬던 로드 밸런서와 비슷하게 각 샤드의 
 EJB는 프레임워크 코드가 개발자의 코드에 복잡하게 얽히는 반면 스프링은 프레임워크 로직과 비즈니스 로직이 확실히 분리되는 비침투적 프레임워크이다
 
 ---
+
+### 2025-09-23
+
+#### chapter02 프로젝트 생성
+
+#### @SpringBootApplication  
+스프링 부트 프로젝트 생성 시 main() 메소드 (entry point) 에 @SpringBootApplication이 선언되어 있는데,  
+이 어노테이션 내부에는 아래의 핵심 어노테이션이 있다
+
+ - @SpringBootConfiguration  
+    자바 설정 클래스로 별도의 스프링 빈을 정의할 수 있음
+    
+
+ - @EnableAutoConfiguration  
+    스프링 부트 프레임워크의 자동 설정 기능을 활성화하는 기능 제공  
+   (META-INF 폴더의 spring.factories에 정의된 데이터를 읽는 SpringFactoriesLoader가 포함되어 있음)
+
+   
+ - @ComponentScan  
+    자바 설정 클래스와 스테레오 타입 (@Controller, @Service, @Repository, @Component..) 어노테이션으로 정의된 클래스 스캔  
+   
+자바 설정 클래스와 스프링 빈 클래스를 스캔하여 스프링 컨테이너에 등록하고 스프링 부트의 자동 설정 기능 동작 등 ..   
+스프링 프레임워크라면 개발자가 이런 과정을 직접 설정해줘야 하는데, 스프링 부트에서는 @SpringBootAppliction 어노테이션 하나로 간단하게 이런 복잡한 설정들을 처리할 수 있다
+
+#### SpringApplication.run()
+
+SpringApplication의 run() 메소드에서는  
+스프링 빈을 로딩하고 이를 관리하는 ApplicationContext (스프링 컨테이너) 객체를 생성한다  
+또한 지연 초기화 (lazy initialization) 기능을 제공하여 실행 시 스프링 빈을 전체 초기화 하지 않고 스프링 빈 객체가 사용될 때 초기화 할 수 있다  
+
+(스프링 프레임워크 공부할 때 하나하나 설정했던 내용들인데 부트는 이렇게 설정이 간단함)
+
+--- 
+
