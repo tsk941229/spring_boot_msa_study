@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.springtour.example'
 version = '0.0.1-SNAPSHOT'
-description = 'chapter02'
+description = 'spring_boot_msa_study'
 
 java {
     toolchain {
