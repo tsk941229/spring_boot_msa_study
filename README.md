@@ -293,6 +293,32 @@ Spring boot 설정 어노테이션
  - @Import  
     @ComponentScan과 역할이 비슷하지만 @Import는 정확한 클래스명을 명시한다 (잘 안쓰임)
 
-
-
 ---
+
+### 2025-09-28
+
+#### 주요 스테레오 타입 어노테이션
+
+ - @Component  
+    가장 일반적인 스테레오타입  
+    스프링이 자동으로 빈으로 등록하도록 표시하는 가장 기본적인 어노테이션
+
+
+ - @Controller  
+    프레젠테이션 계층(Web MVC의 컨트롤러)에서 사용  
+    주로 HTTP 요청을 받아서 처리하는 역할  
+    Spring MVC에서 이 어노테이션을 붙이면 요청 매핑(@RequestMapping 등) 기능이 활성화됨
+
+ 
+- @Service  
+  비즈니스 로직(서비스 계층)을 담당하는 클래스에 사용  
+    특별한 기능은 없고, @Component와 동일하지만 **“여기는 서비스 계층이야”**라고 개발자와 툴(Spring AOP 등)에게 알려주는 의미  
+    AOP 적용 시(예: 트랜잭션) 관점에 따라 자동으로 처리되기도 함  
+
+
+ - @Repository  
+    데이터 접근 계층(DAO, Repository)에 사용
+   
+@Component의 특수화된 버전
+
+특징: 스프링이 데이터 접근 계층의 예외를 스프링 예외 계층(DataAccessException)으로 변환해줌
