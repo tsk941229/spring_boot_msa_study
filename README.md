@@ -317,8 +317,22 @@ Spring boot 설정 어노테이션
 
 
  - @Repository  
-    데이터 접근 계층(DAO, Repository)에 사용
-   
-@Component의 특수화된 버전
+    데이터 접근 계층(DAO, Repository)에 사용  
+    @Component의 특수화된 버전  
+    특징: 스프링이 데이터 접근 계층의 예외를 스프링 예외 계층(DataAccessException)으로 변환해줌
 
-특징: 스프링이 데이터 접근 계층의 예외를 스프링 예외 계층(DataAccessException)으로 변환해줌
+---
+
+### 2025-09-29
+
+#### 스테레오 타입 어노테이션 실습  
+
+Formatter 인터페이스와 LocalDateTimeFormatter 구현체를 만들어 @Component 어노테이션 실습  
+
+SpringBean02Application(@SpringBootApplicaiton)에서 스프링 빈 컨테이너를 실행시키면  
+LocalDateTiemFormatter 클래스가 스캔됨  
+
+예제에서 사용된 ApplicationContext(context)의 getBean()의 인수에 부모 클래스인 Formatter.class를 사용해도 됨  
+
+만약 다른사람이 또 LocalDateTiemFormatter를 다른 패키지에 Bean 등록하여 이름이 겹친다면 예외 발생함  
+그럴 땐 @Component의 (value)로 이름을 바꾸거나 중복된 기능이면 하나로 합쳐주자
