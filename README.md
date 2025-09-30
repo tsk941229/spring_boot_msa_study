@@ -336,3 +336,26 @@ LocalDateTiemFormatter 클래스가 스캔됨
 
 만약 다른사람이 또 LocalDateTiemFormatter를 다른 패키지에 Bean 등록하여 이름이 겹친다면 예외 발생함  
 그럴 땐 @Component의 (value)로 이름을 바꾸거나 중복된 기능이면 하나로 합쳐주자
+
+---
+
+### 2025-09-30
+
+#### 의존성 주입 (DI) 실습
+
+오늘 실습 한 NotificationService에서 Sender를 인터페이스로 만들어 구현체를 외부에서 주입받지 않고  
+NotificationService 내부에서 AppPushSender나 SmsSender를 직접 생성해 필드를 set하고 사용했다고 생각해보자  
+AppPushSender나 SmsSender (하위모듈)가 수정되면 NotificationService (상위모듈)도 수정해줘야 한다  
+이는 강한 결합도를 가지고 있고 코드가 많아진다면 유지보수 하기 힘들 것이다
+이처럼, 의존성 주입은 결합도를 낮추고 응집도를 올려준다
+
+
+1. 어노테이션 기반 DI
+ - @Autowired : 타입(Type) 기반 주입
+ - @Qualifier : 같은 타입의 빈이 여러 개일 때 특정 이름으로 구분
+
+2. 자바 설정 기반 DI
+ - @Configuration : 설정 클래스 선언
+ - @Bean : 메서드 반환값을 스프링 빈으로 등록
+
+---
