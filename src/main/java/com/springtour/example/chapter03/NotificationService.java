@@ -13,7 +13,9 @@ public class NotificationService {
     }
 
     public boolean sendNotification(Object object, String message) {
+
         return messageSender.sendText(object, message);
+
     }
 
 }
