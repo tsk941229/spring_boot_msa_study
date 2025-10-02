@@ -1,5 +1,6 @@
 package com.springtour.example.chapter03;
 
+import com.springtour.example.chapter03.domain.format.Formatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.Printer;

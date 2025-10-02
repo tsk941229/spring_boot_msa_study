@@ -359,3 +359,22 @@ AppPushSender나 SmsSender (하위모듈)가 수정되면 NotificationService (�
  - @Bean : 메서드 반환값을 스프링 빈으로 등록
 
 ---
+
+### 2025-10-02
+
+#### 스프링 빈 스코프 (멀티 쓰레드 실습)
+
+스프링 빈 스코프는 기본값이 singleton인데, prototype과 request, session, application 등이 있다  
+(스프링프레임워크 책 배울 때 했던 내용이라 설명은 패스)  
+
+오늘은 멀티 쓰레드에서 안전하지 않은 객체를 singleton으로 주입했을 때 어떤 문제가 발생하는지 실습 해봤다  
+
+우선 DateFormatter를 Bean 등록하는데, DateFormatter는 필드로 SimpleDateFormat를 가지고 있다  
+여기서 SimpleDateFormat이 문제인데, 이유는 이 SimpleDateFormat은 parse()나 format() 같은 메서드 내부적으로 상태를 가진 객체를 사용하기 때문에 멀티쓰레드에 안전하지 않기 때문이다  
+그래서 멀티 쓰레드로 테스트 시 오류가 발생한다 (SpringBean05Application에서 쓰레드 100개로 테스트)  
+
+즉 멀티쓰레드 안전하지 않은 객체는 빈 등록 전에 스코프를 고민해봐야 한다  
+위 오류는 Bean의 스코프를 prototype으로 바꿔 해결했다  
+싱글톤이라고 다 좋은게 아니라는걸 명심해야겠다
+
+---

@@ -1,4 +1,4 @@
-package com.springtour.example.chapter03;
+package com.springtour.example.chapter03.domain.format;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
