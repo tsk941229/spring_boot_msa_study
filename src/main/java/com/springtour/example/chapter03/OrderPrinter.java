@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
-@Service
+//@Service
 public class OrderPrinter implements Printer<Object> {
 
     /* 필드 주입 */
-    @Autowired
+//    @Autowired
     @Qualifier("localDateTimeFormatter")
     private Formatter formatter;
 
