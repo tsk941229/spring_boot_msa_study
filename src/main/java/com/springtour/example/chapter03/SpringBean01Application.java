@@ -1,5 +1,6 @@
 package com.springtour.example.chapter03;
 
+import com.springtour.example.chapter03.domain.PriceUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
