@@ -6,29 +6,32 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 import java.util.Locale;
 
 @Slf4j
 @SpringBootApplication
-public class SpringBean07Application {
+public class SpringBean09Application {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext ctxt = SpringApplication.run(SpringBean07Application.class);
-        PriceUnit priceUnit = ctxt.getBean(PriceUnit.class);
+        ConfigurableApplicationContext context = SpringApplication.run(SpringBean09Application.class, args);
+
+        log.info("------- Done to initialize spring beans --------");
+        PriceUnit priceUnit = context.getBean(PriceUnit.class);
         log.info("Locale in PriceUnit : {}", priceUnit.getLocale().toString());
-        ctxt.close();
+
+        context.close();
+
     }
 
     @Bean
-//    @Primary
-    public PriceUnit primaryPriceUnit() {
+    @Lazy
+    @Primary
+    public PriceUnit lazyPriceUnit() {
+        log.info("initialize lazyPriceUnit");
         return new PriceUnit(Locale.US);
     }
 
-    @Bean
-    public PriceUnit secondaryPriceUnit() {
-        return new PriceUnit(Locale.KOREA);
-    }
 }
