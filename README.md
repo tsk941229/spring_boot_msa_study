@@ -460,3 +460,19 @@ AppPushSender나 SmsSender (하위모듈)가 수정되면 NotificationService (�
     GET, PUT, DELETE 등 요청을 여러번 보내도 결과가 같도록 설계 해야 함
 
 ---
+
+### 2025-10-16
+
+#### @ResponseBody와 HttpMessageConverter
+
+HttpMessageConverter의 역할  
+HTTP 요청(Request) 본문 -> 자바 객체로 변환 (deserialize)  
+자바 객체 -> HTTP 응답(Response) 본문으로 변환 (serialize)
+
+Spring MVC는 RequestMappingHandlerAdapter 내부에 여러 개의 HttpMessageConverter를 등록해 두고,  
+요청과 응답의 Content-Type, Accept 헤더를 기준으로 적절한 변환기를 자동으로 선택한다  
+
+일반적으로 컨트롤러는 View 이름을 반환하지만, @ResponseBody를 명시하면 ViewResolver를 거치지 않고 리턴값을 HTTP Response Body에 직접 쓴다  
+이 때 Spring MVC는 요청의 Content-Type(요청 본문 형식)과 응답의 Accept(응답 희망 형식) 헤더를 기준으로, 적절한 HttpMessageConverter를 선택하여 데이터를 변환한다
+
+---
