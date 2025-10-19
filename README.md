@@ -476,3 +476,4 @@ Spring MVC는 RequestMappingHandlerAdapter 내부에 여러 개의 HttpMessageCo
 이 때 Spring MVC는 요청의 Content-Type(요청 본문 형식)과 응답의 Accept(응답 희망 형식) 헤더를 기준으로, 적절한 HttpMessageConverter를 선택하여 데이터를 변환한다
 
 ---
+
