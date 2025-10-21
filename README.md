@@ -477,3 +477,38 @@ Spring MVC는 RequestMappingHandlerAdapter 내부에 여러 개의 HttpMessageCo
 
 ---
 
+### 2025-10-21
+
+#### Jackson 라이브러리의 @JsonProperty, @JsonSerializer, @JsonFormat
+
+먼저 위 세 어노테이션은  
+REST-API에서 주고받는 JSON 메시지를 만들 때(마셜링/언마셜링) 사용된다 
+
+마셜링: 객체 -> JSON 변환
+
+ - @JsonProperty  
+    이 어노테이션을 명시한 컬럼은 JSON으로 마셜링 될 때 컬럼명이 아닌 어노테이션에 지정한 필드 이름으로 변경된다  
+    시스템에서 사용하는 속성 이름과 JSON 객체에서 사용해야 할 속성 이름이 다른 경우 이 어노테이션 설정으로 간단하게 응답값 변경 가능  
+    예를 들어 hotelRoomdId 속성을 가진 객체인데, JSON 응답값을 id로 반환해야 하는 경우  
+    hotelRoomdId 속성에 @JsonProperty("id") 선언
+   
+ 
+ - @JsonSerializer  
+    단순 변환 이상의 맞춤형 JSON 변환이 필요할 때 사용 된다  
+    예를들어 서버에서 클라이언트로 Long 타입의 데이터를 보낼 때,  
+    js에서는 64비트 정수를 안전하게 표현하지 못하기 때문에 Long 타입은 보통 String으로 변환하여 보내주는게 좋은데,  
+    이럴 때 @JsonSerializer("using = ToStringSerializer.class") 와 같이 선언해준다  
+    ToStringSerializer는 Jackson에서 제공하며 여러가지 JsonSerializer 구현체가 있고, 커스텀 해서 쓸 수도 있다  
+   
+   
+ - @JsonFormat  
+    날짜/시간, 숫자, 문자열 등 필드 포맷을 지정할 때 사용하는 어노테이션  
+    커스텀 Serializer를 만들지 않아도, 간단한 포맷 변경이 가능 하며  
+    주로 날짜/시간(Date, LocalDate, LocalDateTime), Enum, 숫자 등에서 사용한다  
+    예:   
+    @JsonFormat(pattern = "yyyy-MM-dd")  
+    private LocalDate birthDate;
+
+
+
+--- 
