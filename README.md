@@ -562,3 +562,47 @@ REST-API에서 주고받는 JSON 메시지를 만들 때(마셜링/언마셜링)
     기존 트랜잭션 안에서 중첩 트랜잭션 시작  
     부분 롤백이 필요한 경우
 
+
+--- 
+
+### 2025-10-24
+
+#### @Transactional 속성 중 [격리 수준] 공부
+
+isolation은 트랜잭션이 다른 트랜잭션의 변경을 얼마나 격리해서(보이는지) 결정한다
+
+주요 격리 현상 3가지
+
+ - 더티 리드(Dirty Read): 커밋되지 않은 다른 트랜잭션의 데이터를 읽음  
+
+
+ - 비반복적 읽기(Non-repeatable Read): 같은 트랜잭션 안에서 같은 쿼리를 두 번 실행했을 때 결과가 달라짐(다른 트랜잭션이 중간에 수정 + 커밋)  
+
+
+ - 팬텀 리드(Phantom Read): 같은 트랜잭션 안에서 같은 조건의 집합 조회가 달라짐(다른 트랜잭션이 조건에 맞는 행을 추가/삭제 + 커밋)  
+
+격리 수준 [ 예: @Transactional(isolation = Isolation.READ_COMMITTED) ]
+
+ - Isolation.DEFAULT: Spring이 DB 드라이버/데이터소스의 기본(디폴트) 격리 수준을 사용하도록 함  
+    (대부분의 경우 DB 서버 설정에 따름)
+
+
+ -  Isolation.READ_UNCOMMITTED: 가장 낮은 수준  
+     더티 리드 허용, 거의 사용하지 않음  
+
+
+ - Isolation.READ_COMMITTED: 더티 리드 차단, 비반복적 읽기와 팬텀은 허용  
+    많은 DB의 기본값(예: Oracle, PostgreSQL)이나, MySQL InnoDB는 기본이 REPEATABLE_READ(아래)
+
+
+ - Isolation.REPEATABLE_READ: 더티 리드와 비반복적 읽기 차단, 팬텀은 DB 구현에 따라 다름
+
+
+ - Isolation.SERIALIZABLE: 가장 엄격  
+    모든 이상 현상(더티, 비반복적, 팬텀) 차단  
+    동시성 크게 저하될 수 있고 교착(lock) 혹은 직렬화 실패가 발생할 수 있음
+
+
+교착 가능성/직렬화 실패 발생 시에는 재시도 전략(@Retryable 등) 과 결합해서 안전하게 처리하기
+
+---
