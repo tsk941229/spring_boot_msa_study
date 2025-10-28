@@ -1,16 +1,16 @@
 package com.springtour.example.chapter05.controller;
 
 import com.springtour.example.chapter05.domain.HotelRoomType;
-import com.springtour.example.chapter05.domain.dto.DeleteResultResponse;
-import com.springtour.example.chapter05.domain.dto.HotelRoomIdResponse;
-import com.springtour.example.chapter05.domain.dto.HotelRoomRequest;
-import com.springtour.example.chapter05.domain.dto.HotelRoomResponse;
+import com.springtour.example.chapter05.domain.dto.*;
 import com.springtour.example.chapter05.utils.IdGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -62,6 +62,30 @@ public class HotelRoomController {
         HotelRoomIdResponse body = HotelRoomIdResponse.from(1_002_003_004L);
 
         return new ResponseEntity(body, headers, HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/hotels/{hotelId}/rooms/{roomNumber}")
+    public ResponseEntity<HotelRoomIdResponse> updateHotelRoomByRoomNumber(
+            @PathVariable Long hotelId,
+            @PathVariable String roomNumber,
+            @Validated @RequestBody HotelRoomUpdateRequest hotelRoomUpdateRequest,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            FieldError fieldError = bindingResult.getFieldError();
+            String errorMessage = new StringBuilder("validation error.")
+                    .append(" field : ").append(fieldError.getField())
+                    .append(", code : ").append(fieldError.getCode())
+                    .append(", message : ").append(fieldError.getDefaultMessage())
+                    .toString();
+
+            System.out.println(errorMessage);
+            return ResponseEntity.badRequest().build();
+        }
+
+        System.out.println(hotelRoomUpdateRequest.toString());
+        HotelRoomIdResponse body = HotelRoomIdResponse.from(1_002_003_004L);
+        return ResponseEntity.ok(body);
     }
 
 }
