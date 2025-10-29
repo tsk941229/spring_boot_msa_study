@@ -1,6 +1,8 @@
 package com.springtour.example.chapter05.domain.dto;
 
 import com.springtour.example.chapter05.domain.HotelRoomType;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -15,7 +17,6 @@ public class HotelRoomUpdateRequest {
 
     @NotNull(message = "originalPrice can't be null")
     @Min(value = 0, message = "originalPrice must be larger than 0")
-    @No
     private BigDecimal originalPrice;
 
 }
