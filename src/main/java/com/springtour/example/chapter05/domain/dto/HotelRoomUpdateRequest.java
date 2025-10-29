@@ -10,11 +10,12 @@ import java.math.BigDecimal;
 @ToString
 public class HotelRoomUpdateRequest {
 
-//    @NotNull(message = "roomType can't be null")
+    @NotNull(message = "roomType can't be null")
     private HotelRoomType roomType;
 
-//    @NotNull(message = "originalPrice can't be null")
-//    @Min(value = 0, message = "originalPrice must be larger than 0")
+    @NotNull(message = "originalPrice can't be null")
+    @Min(value = 0, message = "originalPrice must be larger than 0")
+    @No
     private BigDecimal originalPrice;
 
 }

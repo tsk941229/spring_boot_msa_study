@@ -3,6 +3,7 @@ package com.springtour.example.chapter05.controller;
 import com.springtour.example.chapter05.domain.HotelRoomType;
 import com.springtour.example.chapter05.domain.dto.*;
 import com.springtour.example.chapter05.utils.IdGenerator;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -68,7 +68,7 @@ public class HotelRoomController {
     public ResponseEntity<HotelRoomIdResponse> updateHotelRoomByRoomNumber(
             @PathVariable Long hotelId,
             @PathVariable String roomNumber,
-            @Validated @RequestBody HotelRoomUpdateRequest hotelRoomUpdateRequest,
+            @Valid @RequestBody HotelRoomUpdateRequest hotelRoomUpdateRequest,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
