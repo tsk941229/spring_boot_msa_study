@@ -611,3 +611,39 @@ isolation은 트랜잭션이 다른 트랜잭션의 변경을 얼마나 격리�
 
 #### Spring에서 jakarta.validation를 어떻게 처리하는지 공부
 
+@Vaild 파라미터를 스프링이 어떻게 감지하여 유효성 검증을 하는지 궁금해서 찾아봤다  
+
+먼저 스프링은 jakarta.validation을 직접 구현하진 않고  
+jakarta.validation.Validator 인터페이스를 자동 감지 (auto-detect) 한다  
+ -> 스프링은 이 인터페이스를 구현한 Hibernate Validator를 자동으로 사용한다
+
+핵심 연결고리는 LocalValidatorFactoryBean인데,  
+LocalValidatorFactoryBean 클래스를 빈으로 등록해 Jakarta Validator를 감싸고  
+LocalValidatorFactoryBean이 jakarta.validation.ValidatorFactory를 생성,  
+내부적으로 Hibernate Validator를 초기화한다  
+[ Spring이 자체 Validator와 Jakarta Validator를 브리지(Bridge) 형태로 묶어주는 클래스가
+LocalValidatorFactoryBean ]
+
+검증 트리거는 @Valid (또는 @Validated)
+컨트롤러나 서비스 메서드 파라미터 앞에 @Valid (또는 @Validated) 를 붙이면
+
+1. 컨트롤러 파라미터일 때  
+    내부적으로 WebDataBinder.validate() 호출  
+    WebDataBinder는 Global Validator (즉, LocalValidatorFactoryBean)를 사용해 객체 검증
+
+
+2. 서비스 메서드일 때  
+    AOP 프록시를 만들어 메서드 호출 전후에 jakarta.validation.Validator를 이용해 파라미터 및 리턴값 검증
+
+검증 실패 시 동작  
+
+ - 파라미터 뒤에 BindingResult 있음 : 오류를 BindingResult에 담고 예외는 발생 X  
+
+ - BindingResult 없음 : MethodArgumentNotValidException (RequestBody) 또는 BindException (ModelAttribute) 발생
+
+ - 서비스 레벨 검증 실패 : ConstraintViolationException 발생
+
+Spring Boot는 위 예외들을 자동으로 400 Bad Request로 처리하며,
+응답 바디에 오류 세부정보(JSON)를 포함시킨다  
+
+---
