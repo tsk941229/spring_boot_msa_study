@@ -671,4 +671,7 @@ Spring Boot는 위 예외들을 자동으로 400 Bad Request로 처리하며,
 REQUIRES_NEW로 데이터를 삽입한 뒤, 같은 트랜잭션 내에서 동일 테이블을 다시 조회하는 과정에서 문제가 발생  
 MyBatis 1차 캐시(SqlSession 캐시)에 이전 조회 결과가 남아있어 실제 DB에는 새로운 데이터가 존재함에도 불구하고 조회 결과가 null로 반환됨 -> NullPointerException 발생
 
+REQUIRES_NEW 트랜잭션 범위에서 수정된 테이블을 대상으로 한 조회문만 캐시를 비우게 하면 되기 때문에  
+해당 테이블을 조회하는 쿼리에 flushCache="true"를 설정하여 쿼리 실행 시 항상 1차 캐시를 비우고 DB에서 조회하게끔 하여 문제를 해결했다
+
 ---
