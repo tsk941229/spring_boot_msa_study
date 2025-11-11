@@ -699,3 +699,22 @@ Controller 메서드 수행 중 예외 발생 시 발생한 예외 타입을 보
 일반 컨트롤러 메서드에서의 반환과 같이 메서드 수행 후 처리결과를 DispatcherServlet으로 반환 -> 반환 타입에 따라 ViewResolver나 HttpMessageConverter를 통해 응답으로 변환된다
 
 ---
+
+### 2025-11-11
+
+#### Spring에서 제공하는 자원관리와 IO 처리 (일부분)
+
+#### ClassPathResource  
+ClassPathResource resource = new ClassPathResource("/sample.txt");  
+"/sample.txt" → src/main/resources/sample.txt 파일을 찾고,  
+InputStream inputStream = resource.getInputStream();  
+getInputStream() 메서드로 InputStream을 반환받을 수 있다
+
+#### StreamUtils.copy  
+ServletResponse에서 outPutStream을 반환하여  
+StreamUtils.copy(InputStream is, OutputStream os);  
+위와 같이 간단하게 파일을 response로 반환할 수 있다  
+(주의: 파일 타입에 따라 ContentTpye, header 지정해주자)
+
+\+ try-with-resources로 AutoCloseable 구현객체는 자동으로 close() 해주도록 하자
+
