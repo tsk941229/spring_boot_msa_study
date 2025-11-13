@@ -738,7 +738,8 @@ AutoConfiguration.imports 파일들을 읽는다 (WebMvcAutoConfiguration 등등
 책 내용이 너무 딥하게 들어가서 오늘은 간단하게 알아보고 나중에 또 복습해보자,,
 
 결론은 Spring Boot는 스프링 프레임워크랑 다르게 spring-boot-starter-web 의존으로 기본설정이 자동으로 다 되고,  
-개발자가 일부 설정을 추가하기 위해선 WebMvcConfigurer를 구현 (@Configuration 어노테이션 함께) 하여  원하는 메서드를 재정의 하여 사용하면 된다    
+개발자가 일부 설정을 추가하기 위해선 WebMvcConfigurer를 구현 (@Configuration 어노테이션 함께) 하여  원하는 메서드를 재정의 하여 사용하면 된다  
+이렇게 하면 자동 구성은 유지되며 일부 기능만 수정(추가)된다  
 (Spring Boot는 WebMvcAutoConfiguration 내부에서 DelegatingWebMvcConfiguration을 통해 개발자가 등록한 WebMvcConfigurer들을 자동 감지함)
 
 ---
