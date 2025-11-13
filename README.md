@@ -718,3 +718,27 @@ StreamUtils.copy(InputStream is, OutputStream os);
 
 \+ try-with-resources로 AutoCloseable 구현객체는 자동으로 close() 해주도록 하자
 
+
+---
+
+### 2025-11-13
+
+#### Spring Boot는 왜 spring-boot-starter-web만 의존해도 기본 설정이 되는가
+
+Spring Boot에서 spring-boot-starter-web 하나만 추가해도
+내장 톰캣, DispatcherServlet, JSON 변환기(Jackson) 등이 자동으로 설정되는 이유는
+Starter 의존성 관리 + 자동 구성(Auto Configuration) 구조 덕분이다
+
+핵심은 자동 구성(Auto Configuration) 인데,  
+@SpringBootApplication 안에 @EnableAutoConfiguration 이 포함되어 있고, 이 어노테이션이 자동 설정의 핵심이다  
+
+@EnableAutoConfiguration 내부적으로 AutoConfigurationImportSelector를 통해 spring-boot-autoconfigure 모듈 안의
+AutoConfiguration.imports 파일들을 읽는다 (WebMvcAutoConfiguration 등등..)  
+
+책 내용이 너무 딥하게 들어가서 오늘은 간단하게 알아보고 나중에 또 복습해보자,,
+
+결론은 Spring Boot는 스프링 프레임워크랑 다르게 spring-boot-starter-web 의존으로 기본설정이 자동으로 다 되고,  
+개발자가 일부 설정을 추가하기 위해선 WebMvcConfigurer를 구현 (@Configuration 어노테이션 함께) 하여  원하는 메서드를 재정의 하여 사용하면 된다    
+(Spring Boot는 WebMvcAutoConfiguration 내부에서 DelegatingWebMvcConfiguration을 통해 개발자가 등록한 WebMvcConfigurer들을 자동 감지함)
+
+---
