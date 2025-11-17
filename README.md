@@ -743,3 +743,82 @@ AutoConfiguration.imports 파일들을 읽는다 (WebMvcAutoConfiguration 등등
 (Spring Boot는 WebMvcAutoConfiguration 내부에서 DelegatingWebMvcConfiguration을 통해 개발자가 등록한 WebMvcConfigurer들을 자동 감지함)
 
 ---
+
+### 2025-11-17
+
+#### XSS( Cross-Site Scripting )
+
+#### XSS란?
+
+공격자가 악성 스크립트를 웹 페이지에 삽입하여, 그 페이지를 보는 다른 사용자의 브라우저에서 스크립트를 실행하게 만드는 공격
+
+XSS가 발생하면 공격자가 정상 사용자의 권한으로 JavaScript를 실행할 수 있음
+
+대표적으로 아래와 같은 행위가 가능해짐  
+
+로그인 세션 쿠키 탈취 (자동 로그인 쿠키 포함)  
+CSRF 토큰 탈취  
+DOM 위변조  
+저장된 카드 정보, 사용자 정보 훔치기  
+가짜 결제창, 가짜 입력창 표시 (피싱)  
+페이지 리다이렉트  
+백엔드 API 호출을 사용자의 세션으로 마음대로 실행
+
+#### XSS의 주요 종류 3가지  
+
+Stored XSS (저장형)  
+
+악성 스크립트가 DB나 파일에 저장되었다가 사용자에게 다시 노출되는 형태  
+ - 예) 게시판 댓글에 \<script>alert(1)\</script> 삽입  
+    그 글을 읽는 모든 사용자에게 스크립트 실행됨
+
+Reflected XSS (반사형)
+
+악성 스크립트가 URL 파라미터 등으로 들어와서 즉시 응답에 반영되는 경우
+
+ - 예) https://example.com/search?q=<script\>alert(1)\</script>  
+    검색 결과 페이지가 q 값을 그대로 화면에 보여주면 실행됨
+
+DOM-based XSS
+
+프론트 JS 코드에서 직접 취약하게 처리할 때 발생
+
+ - 예) var name = location.hash.substring(1);  
+   document.body.innerHTML = name;  // 취약
+
+이런 경우 #\<script>alert(1)\</script> 만으로도 XSS 발생
+
+#### XSS를 유발하는 코드
+
+1. 사용자 입력을 HTML에 그대로 삽입  
+    \<div>${param.value}\</div>
+
+
+2. innerHTML로 삽입  
+    element.innerHTML = userInput;
+
+
+3. JS 템플릿에 직접 삽입  
+   location.href = `${userInput}`;
+
+
+4. jQuery .html() / .append() 등이 취약  
+   $('#box').html(userInput);
+
+
+#### 예방 방법
+
+출력 인코딩(Escape)  
+ -  HTML 출력할 때 반드시 escape  
+< > & 등을 \&lt; \&gt;로 치환  
+URL encode  
+\\ 등 이스케이프
+
+
+최신 프레임워크/ 라이브러리 사용
+
+HttpOnly 쿠키 사용 등 ..
+
+---
+
+
