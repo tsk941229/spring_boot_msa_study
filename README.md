@@ -821,4 +821,48 @@ HttpOnly 쿠키 사용 등 ..
 
 ---
 
+### 2025-11-18
+
+#### Spring Proxy 관련 정리
+
+Spring AOP의 핵심 동작 원리는 Proxy이다  
+Proxy의 정의 / 생성, 동작 원리를 정리해보자  
+
+#### Proxy란?
+
+Spring에서 Proxy란  
+비즈니스 객체(타겟)를 감싸고 대신 메서드를 실행하면서 횡단관심(트랜잭션,로깅,예외처리...)을 추가하는 객체  
+-> AOP와 밀접한 연관이 있다  
+
+Proxy 종류  
+타겟 객체가 interface 존재에 따라 두개로 나뉜다  
+interface 존재: JDK Dynamic Proxy (런타임에 바이트코드를 생성하는 방식)  
+interface 없음: CGLIB (클래스 상속 기반으로 바이트코드를 생성하는 방식)   
+
+Spring에선 BPP (BeanPostProcessor) 가 자동으로 프록시를 생성해준다
+
+
+#### Proxy는 언제, 어떻게 만들어질까?  
+
+Spring이 컴포넌트 스캔 후 Bean을 생성하는 과정에서  
+BPP (BeanPostProcessor) 가 모든 Bean을 검사하고 이 Bean은 AOP 적용 대상인지 판단한다  
+그 후 필요한 경우에만 프록시 객체로 감싸서 DI 컨테이너에 등록한다  
+여기서 해당 Bean이 interface 존재하는지, 아닌지에 따라 JDK Dynamic / CGLIB 로 나뉜다 
+
+즉, AOP 적용 대상이 아닌 일반 Bean은 프록시를 만들지 않고 AOP 적용 대상인 Bean만 생성될 때 프록시를 만든다
+
+프록시가 생성되면 DI 컨테이너에 저장되는 객체는 원본이 아니라 프록시 객체가 되며 controller등에서 주입받아 사용하는 객체도 Proxy이다
+
+Proxy는 실제로는 바이트코드이며 원본(타겟) 객체를 상속하여 메서드를 오버라이딩 하는 것 처럼 생겼다고 한다  
+그 오버라이딩 한 메서드에서 타겟의 메서드(핵심관심)를 호출하며, 앞 뒤로 횡단관심 작업을 수행한다
+
+#### 정리
+
+Proxy는 Bean이 생성될 때 BPP가 해당 Bean이 AOP 적용 대상인지, interface 구현체인지, 아닌지에 따라 알맞은 Proxy를 생성하고 DI 컨테이너에 저장한다  
+※ AOP 적용 대상 여부는 Advisor 매칭 여부 즉, 등록된 Advisor와 매칭이 되는지 확인해서 결정된다
+
+---
+
+
+
 
