@@ -62,7 +62,7 @@
  - 가벼운 통신 프로토콜  
    각 마이크로서비스 간의 가벼운 통신 (HTTP 기반의 REST-API를 많이 사용)  
    각 서비스 간의 통신의 부하 최소화
-
+   
 
  - 외부 공개 인터페이스  
    서비스간의 통신이 필연적이기 때문에 한번 공개된 마이크로서비스의 메시지 포맷(응답값 구조화)을 바꾸기 힘듬 -> 버전 변경 같은 방법으로 점진적으로 인터페이스를 변경함 
@@ -923,6 +923,70 @@ Proxy는 Bean이 생성될 때 BPP가 해당 Bean이 AOP 적용 대상인지, in
 
 추상화는 결합도를 낮추고, 유연성과 확장성을 확보하기 위한 필수 설계 요소이다  
 유지보수 가능한 소프트웨어를 만들기 위해 반드시 고려해야 한다
+
+---
+
+### 2025-11-21
+
+#### URL + HttpURLConnection를 사용한 Http 통신 정리
+
+오늘 Toss Api 연동하다가 문서에 URL, HttpURLConnection 객체로 Http 통신을 하는 예시가 있었는데,
+스트림 기반으로 코드가 장황하지만 동작 원리를 이해하기 좋을 것 같아 정리해본다
+
+#### 특징
+
+* JDK 기본 제공 (추가 의존성 없음)
+* 요청/응답을 모두 스트림으로 직접 처리
+* 코드가 복잡하고 불편
+* 간단한 테스트나 동작 원리 학습용으로 적합
+
+#### 통신 흐름
+
+1. `URL` 객체 생성
+2. `openConnection()`으로 연결 생성 → `HttpURLConnection` 타입으로 캐스팅
+3. HTTP Method, Header 설정
+4. `OutputStream`으로 요청 바디 전송(POST/PUT 등)
+5. 응답 코드 확인
+6. `InputStream`을 이용해 응답 읽기
+7. 연결 종료
+
+#### 예시 코드
+
+```java
+URL url = new URL("https://example.com/api");
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+conn.setRequestMethod("POST");
+conn.setRequestProperty("Content-Type", "application/json");
+conn.setDoOutput(true);
+
+try (OutputStream os = conn.getOutputStream()) {
+    os.write(json.getBytes("UTF-8"));
+}
+
+int status = conn.getResponseCode();
+InputStream is = (status == 200) ? conn.getInputStream() : conn.getErrorStream();
+String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+
+conn.disconnect();
+```
+
+#### 장점
+
+* 추가 라이브러리 필요 없음
+* 스트림 기반 동작 원리 이해에 도움
+
+#### 단점
+
+* 장황하고 실무에서는 거의 사용하지 않음
+* 예외 처리 및 설정이 번거로움
+
+
+최소한의 환경에서 네트워크 요청을 보낼 수 있지만, 유지보수성과 개발 효율이 떨어지긴 한다  
+Java 11이상에서 제공하는 HttpClient나, RestTemplate, WebClient 등 최신 사용하기 더 편리한 외부 라이브러리를 사용하는게 일반적으로 좋겠지만  
+Java 버전이 낮거나 외부 라이브러리 사용에 제한이 있는 경우도 있어서 알아두면 좋을 것 같다
+
+---
 
 
 
