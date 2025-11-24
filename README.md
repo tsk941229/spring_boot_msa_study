@@ -988,5 +988,69 @@ Java 버전이 낮거나 외부 라이브러리 사용에 제한이 있는 경�
 
 ---
 
+### 2025-11-24
 
+### HttpClient 정리
+
+지난번 URL + HttpURLConnection를 사용한 Http 통신을 정리했었는데,  
+비동기(Async), 동기(Sync), HTTP/2까지 모두 지원하며 더 사용이 편리한 HttpClient도 정리해본다  
+(Java 11버전 부터 사용 가능)
+
+#### 특징
+
+* JDK 11+ 기본 제공 (추가 의존성 없음)
+* 동기/비동기 모두 지원
+* HTTP/1.1 + HTTP/2 지원
+* 사용법이 직관적이며 유지보수 용이
+
+#### 기본 구조
+
+1. `HttpClient` 생성 (전역 재사용 가능)
+2. `HttpRequest`로 요청 정보 구성
+3. `client.send()` 또는 `client.sendAsync()`로 요청 전송
+4. `HttpResponse`로 결과 수신
+
+#### 예시 코드 (동기)
+
+```java
+HttpClient client = HttpClient.newHttpClient();
+
+HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://example.com/api"))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(json))
+        .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+int statusCode = response.statusCode();
+String responseBody = response.body();
+```
+
+#### 예시 코드 (비동기)
+
+```java
+client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+      .thenApply(HttpResponse::body)
+      .thenAccept(System.out::println);
+```
+
+#### 장점
+
+* 현대적인 API, 사용법 단순
+* 비동기 지원 (CompletableFuture 기반)
+* HTTP/2 지원
+* 문자열/바이트/파일 등 다양한 BodyPublisher & BodyHandler 지원
+
+#### 단점
+ 
+* Apache HttpClient, WebClient 같은 외부라이브러리 처럼 세밀한 설정은 부족할 때도 있음
+
+#### 정리
+
+HttpURLConnection은 좀 번거로웠는데, 더 사용이 간편하다  
+순수 JDK 환경에서의 사용은 HttpClient가 좋을 것 같다  
+(Json 라이브러리 simple json 쓰다가 jackson 쓰는 느낌)
+
+---
 
