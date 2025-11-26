@@ -1054,3 +1054,82 @@ HttpURLConnection은 좀 번거로웠는데, 더 사용이 간편하다
 
 ---
 
+### 2025-11-26
+
+### java.time 패키지 [OffsetDateTime, ZonedDateTime, LocalDateTime] 정리
+
+java.time 패키지 (Java 8버전 이상) 에서 제공하는 `OffsetDateTime`, `ZonedDateTime`, `LocalDateTime` 객체 사용 정리
+
+java.time 패키지 관련 공부를 한번 했었는데, 오늘 외부 api에서 보내주는 날짜 포맷 (`2025-11-26T16:38:53+09:00`)을 변환하여 DB에 넣는데 변환을 어떻게 할지 (time 객체를 뭘 사용할지) 바로 떠오르지 않아서 한번 더 정리 해본다
+
+#### 1. LocalDateTime
+
+#### 특징
+
+* 날짜와 시간 정보를 가지지만, 타임존 정보는 없음
+* 로컬 환경의 날짜/시간 처리
+* 타임존을 별도로 관리하여 해당 데이터에는 타임존이 필요 하지 않을 때 간편하게 사용
+
+```java
+// 포맷 예시: 2025-11-26T10:30:45
+
+// 생성 예시
+LocalDateTime now = LocalDateTime.now();
+LocalDateTime ldt = LocalDateTime.of(2025, 11, 26, 10, 30, 45);
+
+// 변환 (ZonedDateTime, OffsetDateTime)
+ZonedDateTime zdt = ldt.atZone(ZoneId.of("Asia/Seoul"));
+OffsetDateTime odt = ldt.atOffset(ZoneOffset.ofHours(9));
+```
+
+#### 2. OffsetDateTime
+
+#### 특징
+
+* 날짜, 시간 + UTC 오프셋 정보를 포함 (+09:00 등)
+* 특정 오프셋 기준으로 시간 비교, API 응답 등에 사용
+
+```java
+// 포맷 예시: 2025-11-26T10:30:45+09:00
+
+// 생성 예시
+OffsetDateTime now = OffsetDateTime.now(); // 기본 시스템 오프셋
+OffsetDateTime odt = OffsetDateTime.of(2025, 11, 26, 10, 30, 45, 0, ZoneOffset.ofHours(9));
+
+// 변환 (ZonedDateTime, LocalDateTime)
+ZonedDateTime zdt = odt.atZoneSameInstant(ZoneId.of("Europe/London"));
+LocalDateTime ldt = odt.toLocalDateTime();
+```
+
+#### 3. ZonedDateTime
+
+#### 특징
+
+* 날짜, 시간 + 타임존 정보를 포함 (Asia/Seoul, Europe/London 등)
+* 세계 시간대 처리, 스케줄링, 이벤트 예약 등
+
+```java
+// 포맷 예시: 2025-11-26T10:30:45+09:00[Asia/Seoul]
+
+// 생성 예시
+ZonedDateTime now = ZonedDateTime.now();
+ZonedDateTime zdt = ZonedDateTime.of(2025, 11, 26, 10, 30, 45, 0, ZoneId.of("Asia/Seoul"));
+
+// 변환 (ZonedDateTime, LocalDateTime)
+OffsetDateTime odt = zdt.toOffsetDateTime();
+LocalDateTime ldt = zdt.toLocalDateTime();
+```
+
+#### 정리
+
+`LocalDateTime`: 날짜 + 시간  
+
+`OffsetDateTime`: 날짜 + 시간 + 오프셋
+
+`ZonedDateTime`: 날짜 + 시간 + 오프셋 + 타임존  
+
+오프셋이란?  
+정확히 말하면 `UTC Offset` 으로 세계 표준 시간(UTC) 기준 몇 시간 차이가 나는지 나타낸 것이다    
+[서울은 +9, 뉴욕은 -5 ...]
+
+---
