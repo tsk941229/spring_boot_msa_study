@@ -1133,3 +1133,84 @@ LocalDateTime ldt = zdt.toLocalDateTime();
 [서울은 +9, 뉴욕은 -5 ...]
 
 ---
+
+### 2025-11-28
+
+### Jackson 라이브러리 JSON 핸들링 정리
+
+Java(Spring)에서 기본 JSON 파서로 사용되는 Jackson을 활용하여  
+JSON 문자열 <-> Java 객체 <-> JsonNode(ObjectNode) 변환하는 방법 정리  
+
+외부 API와 통신하거나 내부 시스템에서 JSON을 주고받을 때  
+String JSON을 Java 객체로 변환하거나, 다시 JSON으로 직렬화할 일이 많은데  
+이 때 Jackson 주로 써왔고 Spring과 잘어울려 앞으로도 Jackson을 많이 쓸 것 같아  
+기본 사용법을 전체적으로 정리해본다
+
+#### 1. String JSON -> Java 객체
+
+`readValue()` 사용  
+JSON 문자열을 특정 클래스(POJO) 타입으로 변환
+
+```java
+ObjectMapper mapper = new ObjectMapper();
+
+String json = "{ \"name\": \"홍길동\", \"age\": 20 }";
+
+User user = mapper.readValue(json, User.class);
+```
+
+#### 2. Java 객체 -> String JSON 
+
+`writeValueAsString()` 사용  
+Java 객체를 JSON 문자열로 직렬화
+```java
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(user);
+```
+
+#### 3. String JSON -> JsonNode
+
+`readTree()` 사용  
+JsonNode는 JSONObject 같은 형태로,  
+키/값 접근이 자유롭고 타입 검사, 수정이 가능
+```java
+ObjectMapper mapper = new ObjectMapper();
+JsonNode node = mapper.readTree(json);
+
+String name = node.get("name").asText();   // "홍길동"
+int age = node.get("age").asInt();         // 20
+```
+
+#### 4. JsonNode -> String JSON
+
+`writeValueAsString()` 사용  
+Java 객체 -> String JSON과 동일
+
+```java
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(node);
+```
+
+#### 5. ObjectNode 생성
+
+`createObjectNode` 사용
+
+```java
+ObjectMapper mapper = new ObjectMapper();
+ObjectNode obj = mapper.createObjectNode();
+
+obj.put("name", "홍길동");
+obj.put("age", 20);
+
+String json = mapper.writeValueAsString(obj);
+```
+
+#### 정리
+
+* JSON 문자열 -> 객체: readValue(json, Class)
+* 객체 -> JSON 문자열: writeValueAsString(객체)
+* JSON 문자열 -> JsonNode: readTree(json)
+* JSON -> Map: readValue(json, TypeReference)
+* 동적 JSON 생성: ObjectNode, ArrayNode ...
+
+---
